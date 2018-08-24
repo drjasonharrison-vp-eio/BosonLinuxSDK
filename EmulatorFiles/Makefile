@@ -25,13 +25,13 @@ else
 endif
 
 all:
-	make $(target) 
+	make $(target)
 
-UART_HalfDuplex32.dll: $(ALLOBJ32) 
-	gcc $(WARNINGS) -static-libgcc -shared -o $@ $^ 
+UART_HalfDuplex32.dll: $(ALLOBJ32)
+	gcc $(WARNINGS) -static-libgcc -shared -o $@ $^
 
-UART_HalfDuplex64.dll: $(ALLOBJ64) 
-	tcc -v -shared -m64 -o $@ $^ 
+UART_HalfDuplex64.dll: $(ALLOBJ64)
+	tcc -v -shared -m64 -o $@ $^
 
 %_32.o: %.c  $(ALLDEPS)
 	gcc $(WARNINGS) -c -o $@ $< $(CFLAGS)
@@ -40,19 +40,19 @@ UART_HalfDuplex64.dll: $(ALLOBJ64)
 	tcc -v -c -o $@ $< $(CFLAGS)
 
 %_Linux32.o: %.c  $(ALLDEPS)
-	gcc -g -fPIC $(WARNINGS) -shared -m32 -c -o $@ $< $(CFLAGS)
+	gcc -g -fPIC $(WARNINGS) -shared -c -o $@ $< $(CFLAGS)
 
 %_Linux64.o: %.c  $(ALLDEPS)
-	gcc -g -fPIC $(WARNINGS) -shared -m64 -c -o $@ $< $(CFLAGS)
+	gcc -g -fPIC $(WARNINGS) -shared -c -o $@ $< $(CFLAGS)
 
 rs232_Linux64.o: rs232.c $(ALLDEPS)
-	gcc -g -fPIC $(WARNINGS) -shared -m64 -c -o $@ $< $(CFLAGS) -Derror=weird_name_to_resolve_name_conflict_error
+	gcc -g -fPIC $(WARNINGS) -shared -c -o $@ $< $(CFLAGS) -Derror=weird_name_to_resolve_name_conflict_error
 
-UART_HalfDuplex32.so: $(ALLOBJ32_LINUX) 
-	gcc -g -fPIC $(WARNINGS) -shared -m32 -o $@ $^ 
+UART_HalfDuplex32.so: $(ALLOBJ32_LINUX)
+	gcc -g -fPIC $(WARNINGS) -shared -o $@ $^
 
-UART_HalfDuplex64.so: $(ALLOBJ64_LINUX) 
-	gcc -g -fPIC $(WARNINGS) -shared -m64 -o $@ $^ 
+UART_HalfDuplex64.so: $(ALLOBJ64_LINUX)
+	gcc -g -fPIC $(WARNINGS) -shared -o $@ $^
 
 .PHONY: clean
 clean:

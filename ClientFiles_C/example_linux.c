@@ -113,24 +113,24 @@ int main()
 	printf("\nSUCCESS\n\n");
 	
 	// Step 6: Read data from Camera Flash
-	uint8_t data[256];
-	printf("Capture Data[0:255]: ");
+//	uint8_t data[256];
+//	printf("Capture Data[0:255]: ");
 	//       memReadCapture(index, offset, num_bytes, empty_data_buffer);
-	result = memReadCapture(0, 0, 256, data);
-	if (result)
-	{
-		printf("Failed memRead with status 0x%08X, exiting.\n",result);
-		Close();
-		return 1;
-	}
-	printf(" -- ");
-	for (idx=0; idx<256; idx++)
-	{
-		if ( !(idx%16) )
-			printf("\n\t");
-		printf("  %02X",data[idx]);
-	}
-	printf("\nSUCCESS\n\n");
+//	result = memReadCapture(0, 0, 256, data);
+//	if (result)
+//	{
+//		printf("Failed memRead with status 0x%08X, exiting.\n",result);
+//		Close();
+//		return 1;
+//	}
+//	printf(" -- ");
+//	for (idx=0; idx<256; idx++)
+//	{
+//		if ( !(idx%16) )
+//			printf("\n\t");
+//		printf("  %02X",data[idx]);
+//	}
+//	printf("\nSUCCESS\n\n");
 
 	// Step 7: Get the current frame count
 	uint32_t frameNum;
@@ -192,79 +192,65 @@ int main()
 	}
 	printf("0x%08X \n", result);
 	printf("SUCCESS\n\n");
+
+	// Step 10: get focal plane array temperature
+	uint16_t fpaTempValue = 0;
+	result = roicGetFPATempValue(&fpaTempValue);
+	printf("GetFPA: ");
+	if (result)
+	{
+		printf("Failed Get FFA temp with status 0x%08X, exiting.\n",result);
+		Close();
+		return 1;
+	}
+	printf("0x%08X temp = %d\n", result, fpaTempValue);
+	printf("SUCCESS\n\n");
+
+	// Step 11: get focal plane array temperature offset
+	uint16_t fpaTempOffset = 0;
+	result = roicGetFPATempOffset(&fpaTempOffset);
+	printf("RunFPA Offset: ");
+	if (result)
+	{
+		printf("Failed Get FPA temp with status 0x%08X, exiting.\n",result);
+		Close();
+		return 1;
+	}
+	printf("0x%08X offset = %d\n", result, fpaTempOffset);
+	printf("SUCCESS\n\n");
+
+	// Step 11: get focal plane array temperature mode
+	FLR_ROIC_TEMP_MODE_E fpaTempMode = 0;
+	result = roicGetFPATempMode(&fpaTempMode);
+	printf("RunFPATempMode: ");
+	if (result)
+	{
+		printf("Failed GetFPATempMode with status 0x%08X, exiting.\n",result);
+		Close();
+		return 1;
+	}
+	printf("0x%08X mode = %d\n", result, fpaTempMode);
+	printf("SUCCESS\n\n");
+
+        // Step 12: get focal plane array temperature table
+	FLR_ROIC_FPATEMP_TABLE_T fpaTempTable;
+	result = roicGetFPATempTable(&fpaTempTable);
+        printf("RunFPATempTable: ");
+        if (result)
+        {
+                printf("Failed GetFPATempTable with status 0x%08X, exiting.\n",result);
+                Close();
+                return 1;
+        }
+	
+	for(idx = 0; idx < 32; idx++ ) {
+		printf( "%d, ", fpaTempTable.value[idx]);
+	}
+	printf("\n");
+
 	
 	printf("Closing...\n");
 	Close();
 	return 0;
 	
-	// Example purposes only
-	// It's not a good idea to write/erase calibration maps
-	// but this demonstrates read/write/erase of Camera Flash
-	/*
-
-	printf("\n");
-	uint8_t flashdata[64];
-	printf("Flash Data[0:64]: ");
-	//       memReadFlash(enum, index, offset, num_bytes, empty_data_buffer);
-	result = memReadFlash(FLR_MEM_LENS_DISTORTION, 1, 0, 64, flashdata);
-	if (result)
-	{
-		printf("Failed with status 0x%08X, exiting.\n",result);
-		Close();
-		return 1;
-	}
-	printf("-- ");
-	for (idx=0; idx<64; idx++)
-	{
-		if ( !(idx%16) )
-			printf("\n\t");
-		printf("  %02X",flashdata[idx]);
-	}
-	printf("\n");
-	
-	uint8_t writedata[64];
-	for (idx=0; idx<64; idx++)
-	{
-		writedata[idx] = idx;
-	}
-	printf("Write Flash: ");
-	result = memWriteFlash(FLR_MEM_LENS_DISTORTION, 1, 0, 64, writedata);
-	if (result)
-	{
-		printf("Failed with status 0x%08X, exiting.\n",result);
-		Close();
-		return 1;
-	}
-	printf("success.\n");
-	
-	printf("\n");
-	printf("Confirm Flash Data[0:64]: ");
-	//       memReadFlash(enum, index, offset, num_bytes, empty_data_buffer);
-	result = memReadFlash(FLR_MEM_LENS_DISTORTION, 1, 0, 64, flashdata);
-	if (result)
-	{
-		printf("Failed with status 0x%08X, exiting.\n",result);
-		Close();
-		return 1;
-	}
-	for (idx=0; idx<64; idx++)
-	{
-		if ( !(idx%16) )
-			printf("\n\t");
-		printf("  %02X",flashdata[idx]);
-	}
-	printf("\n");
-	
-	printf("\n");
-	printf("Erase Flash: ");
-	//       memEraseFlash(enum, index);
-	result = memEraseFlash(FLR_MEM_LENS_DISTORTION, 1);
-	if (result)
-	{
-		printf("Failed with status 0x%08X, exiting.\n",result);
-		Close();
-		return 1;
-	}
-	printf("success.\n");
-	*/
 }
